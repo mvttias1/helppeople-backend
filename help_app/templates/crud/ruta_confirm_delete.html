@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Eliminar ruta{% endblock %}
+{% block content %}
+<h2>Eliminar ruta</h2>
+<p>¿Confirma eliminar la ruta <strong>#{{ object.id_ruta }}</strong>?</p>
+<form method="post">{% csrf_token %}
+  <button class="btn warn" type="submit">Eliminar</button>
+  <a class="btn ghost" href="{% url 'crud_ruta_list' %}">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Panel{% endblock %}
+
+{% block content %}
+<h1 class="title">Panel</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+  {# ===== Recaudación ===== #}
+  {% if is_admin or is_rec %}
+  <div class="card">
+    <h2>Contactos</h2>
+    <p>Total: {{ total_contactos|default:"0" }}</p>
+    <p>Últimos 7 días: {{ nuevos_contactos_7d|default:"0" }}</p>
+    <p class="mt-3">
+      <a class="btn" href="{% url 'crud_contacto_list' %}">Gestionar</a>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Donaciones</h2>
+    <p>Total: {{ total_donaciones|default:"0" }}</p>
+    <p>Últimos 7 días: {{ nuevas_donaciones_7d|default:"0" }}</p>
+    <p class="mt-3">
+      <a class="btn" href="{% url 'crud_donacion_list' %}">Gestionar</a>
+    </p>
+  </div>
+  {% endif %}
+
+  {# ===== Admin (Usuarios) ===== #}
+  {% if is_admin %}
+  <div class="card">
+    <h2>Usuarios</h2>
+    <p>Total: {{ total_usuarios|default:"0" }}</p>
+    <p class="mt-3">
+      <a class="btn" href="{% url 'crud_user_list' %}">Gestionar</a>
+    </p>
+  </div>
+  {% endif %}
+
+  {# ===== Logística ===== #}
+  {% if is_admin or is_log %}
+
+  <div class="card">
+    <h2>Proveedores</h2>
+    <p>Total: {{ total_proveedores|default:"0" }}</p>
+    <p class="mt-3">
+      <a class="btn" href="{% url 'crud_proveedor_list' %}">Gestionar</a>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Repartidores</h2>
+    <p>Total: {{ total_repartidores|default:"0" }}</p>
+    <p class="mt-3">
+      <a class="btn" href="{% url 'crud_repartidor_list' %}">Gestionar</a>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Beneficiarios</h2>
+    <p>Total: {{ total_beneficiarios|default:"0" }}</p>
+    <p class="mt-3">
+      <a class="btn" href="{% url 'crud_beneficiario_list' %}">Gestionar</a>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Rutas</h2>
+    <p>Total: {{ total_rutas|default:"0" }}</p>
+    <p class="mt-3">
+      <a class="btn" href="{% url 'crud_ruta_list' %}">Gestionar</a>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Suministros</h2>
+    <p>Total: {{ total_suministros|default:"0" }}</p>
+    <p class="mt-3">
+      <a class="btn" href="{% url 'crud_suministro_list' %}">Gestionar</a>
+    </p>
+  </div>
+
+  {% endif %}
+
+</div>
+
+<style>
+  .title{font-size:2.2rem;font-weight:800;margin-bottom:1rem}
+  .grid{display:grid}
+  .card{
+    background:#fff;border:1px solid #e5e7eb;border-radius:12px;
+    padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.04)
+  }
+  .card h2{font-size:1.3rem;font-weight:700;margin-bottom:.75rem}
+  .btn{
+    display:inline-block;background:#2563eb;color:#fff;
+    padding:.5rem .9rem;border-radius:.5rem;text-decoration:none
+  }
+  .btn:hover{background:#1d4ed8}
+  .mt-3{margin-top:.75rem}
+  .gap-6{gap:1.5rem}
+  @media (min-width:768px){.md\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+{% endblock %}

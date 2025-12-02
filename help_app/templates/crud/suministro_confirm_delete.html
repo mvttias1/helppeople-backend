@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Eliminar suministro{% endblock %}
+{% block content %}
+<h2>Eliminar suministro</h2>
+<p>¿Confirma eliminar el suministro #{{ object.id_suministro }}?</p>
+<form method="post">{% csrf_token %}
+  <button class="btn warn" type="submit">Eliminar</button>
+  <a class="btn ghost" href="{% url 'crud_suministro_list' %}">Cancelar</a>
+</form>
+{% endblock %}

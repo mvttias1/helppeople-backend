@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Contacto #{{ obj.id }}{% endblock %}
+{% block content %}
+<div class="box">
+  <h2>Contacto #{{ obj.id }}</h2>
+  <table class="table">
+    <tr><th>Nombre</th><td>{{ obj.nombre }}</td></tr>
+    <tr><th>Correo</th><td>{{ obj.correo }}</td></tr>
+    <tr><th>Teléfono</th><td>{{ obj.telefono }}</td></tr>
+    <tr><th>Región</th><td>{{ obj.region }}</td></tr>
+    <tr><th>Comuna</th><td>{{ obj.comuna }}</td></tr>
+    <tr><th>Dirección</th><td>{{ obj.direccion }}</td></tr>
+    <tr><th>Tipo comunidad</th><td>{{ obj.tipo_comunidad }}</td></tr>
+    <tr><th>Nombre comunidad</th><td>{{ obj.nombre_comunidad }}</td></tr>
+    <tr><th>Descripción</th><td>{{ obj.descripcion_necesidad }}</td></tr>
+    <tr><th>Cantidad personas</th><td>{{ obj.cantidad_personas }}</td></tr>
+    <tr><th>Prioridad</th><td>{{ obj.prioridad|title }}</td></tr>
+    <tr><th>Acepta contacto</th><td>{% if obj.acepta_contacto %}Sí{% else %}No{% endif %}</td></tr>
+    <tr><th>Creado</th><td>{{ obj.creado|date:"Y-m-d H:i" }}</td></tr>
+  </table>
+
+  <div class="actions">
+    <a class="btn" href="{% url 'crud_contacto_update' obj.pk %}">Editar</a>
+    <a class="btn warn" href="{% url 'crud_contacto_delete' obj.pk %}">Eliminar</a>
+    <a class="btn ghost" href="{% url 'crud_contacto_list' %}">Volver</a>
+  </div>
+</div>
+{% endblock %}
+

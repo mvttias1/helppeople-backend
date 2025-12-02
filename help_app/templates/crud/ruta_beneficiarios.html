@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Asignar beneficiarios{% endblock %}
+{% block content %}
+
+<h2>Ruta #{{ ruta.id_ruta }} – {{ ruta.descripcion }}</h2>
+<p>Repartidor: <b>{{ ruta.id_repartidor }}</b></p>
+
+<form method="post" class="form-wrap">{% csrf_token %}
+  <label><b>Beneficiarios</b></label>
+
+  <div style="max-height:350px; overflow:auto; border:1px solid #ddd; padding:1rem; border-radius:8px;">
+    {% for b in todos %}
+      <label style="display:block; margin-bottom:4px;">
+        <input type="checkbox" name="beneficiarios"
+               value="{{ b.id_beneficiario }}"
+               {% if b.id_beneficiario in asignados_ids %}checked{% endif %}>
+        {{ b.nombre }} — {{ b.ubicacion }}
+      </label>
+    {% endfor %}
+  </div>
+
+  <p style="margin-top:1rem">
+    <button class="btn" type="submit">Guardar</button>
+    <a class="btn ghost" href="{% url 'crud_ruta_list' %}">Volver</a>
+  </p>
+</form>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Beneficiarios{% endblock %}
+{% block content %}
+<h2>Beneficiarios</h2>
+<p class="actions">
+  <a class="btn" href="{% url 'crud_beneficiario_create' %}">➕ Nuevo beneficiario</a>
+</p>
+<table class="table">
+  <thead><tr><th>ID</th><th>Nombre</th><th>Ubicación</th><th>Acciones</th></tr></thead>
+  <tbody>
+  {% for b in items %}
+    <tr>
+      <td>{{ b.id_beneficiario }}</td>
+      <td>{{ b.nombre }}</td>
+      <td>{{ b.ubicacion }}</td>
+      <td>
+        <a class="btn" href="{% url 'crud_beneficiario_update' b.pk %}">Editar</a>
+        <a class="btn warn" href="{% url 'crud_beneficiario_delete' b.pk %}">Eliminar</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="4">Sin beneficiarios.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

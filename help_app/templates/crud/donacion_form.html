@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ object|default:'Nueva' }} donación{% endblock %}
+{% block content %}
+<div class="box">
+  <h2>{{ object|default:'Nueva' }} donación</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="actions">
+      <button class="btn" type="submit">Guardar</button>
+      <a class="btn ghost" href="{% url 'crud_donacion_list' %}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

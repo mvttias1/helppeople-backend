@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Eliminar donación{% endblock %}
+{% block content %}
+<div class="box">
+  <h2>Eliminar donación</h2>
+  <p>¿Seguro que deseas eliminar la donación de <b>{{ object.nombre }} {{ object.apellido }}</b>?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button class="btn warn" type="submit">Sí, eliminar</button>
+    <a class="btn ghost" href="{% url 'crud_donacion_list' %}">No, volver</a>
+  </form>
+</div>
+{% endblock %}

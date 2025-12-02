@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Contactos{% endblock %}
+{% block content %}
+<h2>Contactos</h2>
+
+<form method="get" class="box" style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:.6rem;align-items:end;">
+  <div><label>Buscar</label><input type="text" name="q" value="{{ request.GET.q }}" class="form-row input"></div>
+  <div><label>Región</label><input type="text" name="region" value="{{ request.GET.region }}"></div>
+  <div><label>Prioridad</label>
+    <select name="prioridad">
+      <option value="">Todas</option>
+      <option value="alta"  {% if request.GET.prioridad == "alta" %}selected{% endif %}>Alta</option>
+      <option value="media" {% if request.GET.prioridad == "media" %}selected{% endif %}>Media</option>
+      <option value="baja"  {% if request.GET.prioridad == "baja" %}selected{% endif %}>Baja</option>
+    </select>
+  </div>
+  <div><button class="btn" type="submit">Filtrar</button></div>
+</form>
+
+<p class="actions">
+  <a class="btn" href="{% url 'crud_contacto_create' %}">➕ Nuevo contacto</a>
+  <a class="btn ghost" href="{% url 'export_contactos_csv' %}">⬇️ Exportar CSV</a>
+</p>
+
+<table class="table">
+  <thead>
+    <tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Prioridad</th><th>Acciones</th></tr>
+  </thead>
+  <tbody>
+  {% for c in object_list %}
+    <tr>
+      <td>{{ c.id }}</td>
+      <td>{{ c.nombre }}</td>
+      <td>{{ c.correo }}</td>
+      <td>{{ c.telefono }}</td>
+      <td>{{ c.prioridad|title }}</td>
+      <td>
+        <a class="btn" href="{% url 'crud_contacto_detail' c.pk %}">Ver</a>
+        <a class="btn" href="{% url 'crud_contacto_update' c.pk %}">Editar</a>
+        <a class="btn warn" href="{% url 'crud_contacto_delete' c.pk %}">Eliminar</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6">Sin contactos.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% if is_paginated %}
+<nav class="box" aria-label="Paginación" style="display:flex;gap:.5rem;align-items:center;justify-content:center;">
+  {% if page_obj.has_previous %}
+    <a class="btn ghost" href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode|cut:'page=' }}">« Anterior</a>
+  {% endif %}
+  <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a class="btn ghost" href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode|cut:'page=' }}">Siguiente »</a>
+  {% endif %}
+</nav>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Contacto / Solicitud de ayuda{% endblock %}
+{% block content %}
+<h2 style="text-align:center; color:#1976d2;">Solicitud de ayuda</h2>
+
+<div class="box">
+  {% if form.non_field_errors %}
+    <ul class="messages"><li class="error">{{ form.non_field_errors }}</li></ul>
+  {% endif %}
+  <form method="post" action="{% url 'contacto' %}">
+    {% csrf_token %}
+    <div class="form-wrap">
+      <div class="form-vertical">
+        <div class="form-row-inline">
+          <div class="form-row">
+            <label>Nombre solicitante</label>
+            {{ form.nombre }} {{ form.nombre.errors }}
+          </div>
+          <div class="form-row">
+            <label>Correo</label>
+            {{ form.correo }} {{ form.correo.errors }}
+          </div>
+        </div>
+
+        <div class="form-row-inline">
+          <div class="form-row">
+            <label>Teléfono</label>
+            {{ form.telefono }} {{ form.telefono.errors }}
+          </div>
+          <div class="form-row">
+            <label>Región</label>
+            {{ form.region }} {{ form.region.errors }}
+          </div>
+        </div>
+
+        <div class="form-row-inline">
+          <div class="form-row">
+            <label>Comuna</label>
+            {{ form.comuna }} {{ form.comuna.errors }}
+          </div>
+          <div class="form-row">
+            <label>Dirección (opcional)</label>
+            {{ form.direccion }} {{ form.direccion.errors }}
+          </div>
+        </div>
+
+        <div class="form-row-inline">
+          <div class="form-row">
+            <label>Tipo de comunidad</label>
+            {{ form.tipo_comunidad }} {{ form.tipo_comunidad.errors }}
+          </div>
+          <div class="form-row">
+            <label>Nombre de la comunidad (opcional)</label>
+            {{ form.nombre_comunidad }} {{ form.nombre_comunidad.errors }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Descripción de la necesidad</label>
+          {{ form.descripcion_necesidad }} {{ form.descripcion_necesidad.errors }}
+        </div>
+
+        <div class="form-row-inline">
+          <div class="form-row">
+            <label>Cantidad estimada de personas</label>
+            {{ form.cantidad_personas }} {{ form.cantidad_personas.errors }}
+          </div>
+          <div class="form-row">
+            <label>Prioridad</label>
+            {{ form.prioridad }} {{ form.prioridad.errors }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="inline-options">
+            {{ form.acepta_contacto }} Acepto ser contactado
+          </label>
+          {{ form.acepta_contacto.errors }}
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn">Enviar solicitud</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

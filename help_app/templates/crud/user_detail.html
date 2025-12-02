@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Detalle usuario{% endblock %}
+{% block content %}
+<div class="box">
+  <h2>Detalle del usuario</h2>
+  <table class="table">
+    <tr><th>ID</th><td>{{ object.id }}</td></tr>
+    <tr><th>Usuario</th><td>{{ object.username }}</td></tr>
+    <tr><th>Email</th><td>{{ object.email }}</td></tr>
+    <tr><th>Staff</th><td>{{ object.is_staff }}</td></tr>
+    <tr><th>Superuser</th><td>{{ object.is_superuser }}</td></tr>
+    <tr><th>Activo</th><td>{{ object.is_active }}</td></tr>
+    <tr><th>Fecha de creación</th><td>{{ object.date_joined|date:"Y-m-d H:i" }}</td></tr>
+  </table>
+  <div class="actions">
+    <a class="btn" href="{% url 'crud_user_update' object.pk %}">Editar</a>
+    <a class="btn warn" href="{% url 'crud_user_delete' object.pk %}">Eliminar</a>
+    <a class="btn ghost" href="{% url 'crud_user_list' %}">Volver</a>
+  </div>
+</div>
+{% endblock %}

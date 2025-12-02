@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Rutas{% endblock %}
+{% block content %}
+<h2>Rutas</h2>
+<p class="actions">
+  <a class="btn" href="{% url 'crud_ruta_create' %}">➕ Nueva ruta</a>
+</p>
+<table class="table">
+  <thead><tr><th>ID</th><th>Descripción</th><th>Repartidor</th><th>Acciones</th></tr></thead>
+  <tbody>
+  {% for x in items %}
+    <tr>
+      <td>{{ x.id_ruta }}</td>
+      <td>{{ x.descripcion }}</td>
+      <td>{{ x.id_repartidor }}</td>
+      <td>
+        <a class="btn" href="{% url 'crud_ruta_update' x.pk %}">Editar</a>
+        <a class="btn warn" href="{% url 'crud_ruta_delete' x.pk %}">Eliminar</a>
+        <a class="btn" href="{% url 'crud_ruta_beneficiarios' x.pk %}">Beneficiarios</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="4">Sin rutas.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Ruta{% endblock %}
+{% block content %}
+<h2>{{ object|default_if_none:"Nueva ruta" }}</h2>
+<form method="post" class="form-vertical form-wrap">{% csrf_token %}
+  {{ form.as_p }}
+  <p class="actions">
+    <button class="btn" type="submit">Guardar</button>
+    <a class="btn ghost" href="{% url 'crud_ruta_list' %}">Cancelar</a>
+  </p>
+</form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Crear cuenta{% endblock %}
+{% block content %}
+<div class="box">
+  <h2>Crear cuenta</h2>
+  <form method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+    <div class="form-vertical">
+      {{ form.non_field_errors }}
+      <div class="form-row">
+        <label>Usuario</label>
+        {{ form.username }} {{ form.username.errors }}
+      </div>
+      <div class="form-row">
+        <label>Email</label>
+        {{ form.email }} {{ form.email.errors }}
+      </div>
+      <div class="form-row">
+        <label>Contraseña</label>
+        {{ form.password1 }} {{ form.password1.errors }}
+      </div>
+      <div class="form-row">
+        <label>Repite la contraseña</label>
+        {{ form.password2 }} {{ form.password2.errors }}
+      </div>
+      <div class="form-actions">
+        <button class="btn" type="submit">Crear</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Repartidores{% endblock %}
+{% block content %}
+<h2>Repartidores</h2>
+<p class="actions">
+  <a class="btn" href="{% url 'crud_repartidor_create' %}">➕ Nuevo repartidor</a>
+</p>
+<table class="table">
+  <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Vehículo</th><th>Coordinador</th><th>Acciones</th></tr></thead>
+  <tbody>
+  {% for r in items %}
+    <tr>
+      <td>{{ r.id_repartidor }}</td>
+      <td>{{ r.nombre }}</td>
+      <td>{{ r.email }}</td>
+      <td>{{ r.vehiculo }}</td>
+      <td>{{ r.id_coordinador }}</td>
+      <td>
+        <a class="btn" href="{% url 'crud_repartidor_update' r.pk %}">Editar</a>
+        <a class="btn warn" href="{% url 'crud_repartidor_delete' r.pk %}">Eliminar</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6">Sin repartidores.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

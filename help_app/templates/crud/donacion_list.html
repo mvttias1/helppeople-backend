@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Donaciones{% endblock %}
+{% block content %}
+<h2>Donaciones</h2>
+
+<p>
+  <a class="btn" href="{% url 'crud_donacion_create' %}">➕ Nueva donación</a>
+  <a class="btn ghost" href="{% url 'panel' %}">Volver al panel</a>
+</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th><th>Nombre</th><th>Apellido</th><th>Correo</th><th>Teléfono</th><th>Certificado</th><th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for d in items %}
+    <tr>
+      <td>{{ d.id }}</td>
+      <td>{{ d.nombre }}</td>
+      <td>{{ d.apellido }}</td>
+      <td>{{ d.correo }}</td>
+      <td>{{ d.telefono }}</td>
+      <td>{{ d.certificado }}</td>
+      <td>
+        <a class="btn" href="{% url 'crud_donacion_detail' d.pk %}">Ver</a>
+        <a class="btn" href="{% url 'crud_donacion_update' d.pk %}">Editar</a>
+        <a class="btn warn" href="{% url 'crud_donacion_delete' d.pk %}">Eliminar</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="7">Sin donaciones.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

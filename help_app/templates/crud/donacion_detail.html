@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Donación #{{ obj.id }}{% endblock %}
+{% block content %}
+<div class="box">
+  <h2>Donación #{{ obj.id }}</h2>
+  <table class="table">
+    <tr><th>Nombre</th><td>{{ obj.nombre }}</td></tr>
+    <tr><th>Apellido</th><td>{{ obj.apellido }}</td></tr>
+    <tr><th>RUT</th><td>{{ obj.rut }}</td></tr>
+    <tr><th>N° documento</th><td>{{ obj.documento }}</td></tr>
+    <tr><th>Correo</th><td>{{ obj.correo }}</td></tr>
+    <tr><th>Teléfono</th><td>{{ obj.telefono }}</td></tr>
+    <tr><th>Certificado</th><td>{{ obj.certificado }}</td></tr>
+    <tr><th>Creado</th><td>{{ obj.creado|date:"Y-m-d H:i" }}</td></tr>
+  </table>
+
+  <div class="actions">
+    <a class="btn" href="{% url 'crud_donacion_update' obj.pk %}">Editar</a>
+    <a class="btn warn" href="{% url 'crud_donacion_delete' obj.pk %}">Eliminar</a>
+    <a class="btn ghost" href="{% url 'crud_donacion_list' %}">Volver</a>
+  </div>
+</div>
+{% endblock %}

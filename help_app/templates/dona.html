@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Donar - Help People{% endblock %}
+{% block content %}
+<h2 style="text-align:center; color:#1976d2;">Haz una donación</h2>
+
+<div class="box">
+  {% if form.non_field_errors %}
+    <ul class="messages"><li class="error">{{ form.non_field_errors }}</li></ul>
+  {% endif %}
+  <form method="post" action="{% url 'dona' %}">
+    {% csrf_token %}
+    <div class="form-wrap">
+      <div class="form-vertical">
+        <div class="form-row-inline">
+          <div class="form-row">
+            <label>Nombre</label>
+            {{ form.nombre }} {{ form.nombre.errors }}
+          </div>
+          <div class="form-row">
+            <label>Apellido</label>
+            {{ form.apellido }} {{ form.apellido.errors }}
+          </div>
+        </div>
+
+        <div class="form-row-inline">
+          <div class="form-row">
+            <label>RUT</label>
+            {{ form.rut }} {{ form.rut.errors }}
+          </div>
+          <div class="form-row">
+            <label>Número de documento</label>
+            {{ form.documento }} {{ form.documento.errors }}
+          </div>
+        </div>
+
+        <div class="form-row-inline">
+          <div class="form-row">
+            <label>Correo</label>
+            {{ form.correo }} {{ form.correo.errors }}
+          </div>
+          <div class="form-row">
+            <label>Teléfono</label>
+            {{ form.telefono }} {{ form.telefono.errors }}
+          </div>
+        </div>
+
+        <fieldset class="form-row">
+          <legend>¿Desea recibir certificado?</legend>
+          {{ form.certificado }} {{ form.certificado.errors }}
+        </fieldset>
+
+        <div class="form-actions">
+          <button type="submit" class="btn">Enviar Donación</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

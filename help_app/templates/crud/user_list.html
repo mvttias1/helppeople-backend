@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<h2>Usuarios</h2>
+
+<p>
+  <a class="btn" href="{% url 'crud_user_create' %}">➕ Nuevo usuario</a>
+  <a class="btn ghost" href="{% url 'panel' %}">Volver al panel</a>
+</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th><th>Usuario</th><th>Email</th><th>Staff</th><th>Superuser</th><th>Activo</th><th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for u in object_list %}
+    <tr>
+      <td>{{ u.id }}</td>
+      <td>{{ u.username }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.is_staff }}</td>
+      <td>{{ u.is_superuser }}</td>
+      <td>{{ u.is_active }}</td>
+      <td>
+        <a class="btn" href="{% url 'crud_user_detail' u.pk %}">Ver</a>
+        <a class="btn" href="{% url 'crud_user_update' u.pk %}">Editar</a>
+        <a class="btn warn" href="{% url 'crud_user_delete' u.pk %}">Eliminar</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="7">No hay usuarios registrados</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
