@@ -1,7 +1,11 @@
 from datetime import timedelta
 import csv
 
+from .email_utils import enviar_correo_notificacion_donacion, enviar_correo
+from rest_framework import generics, permissions
+from .serializers import DonacionSerializer, ContactoSerializer
 from django.contrib import messages
+from .utils_email import enviar_correo
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group, User
@@ -19,6 +23,7 @@ from .models import (
     Proveedor, Repartidor, Beneficiario,
     Ruta, Suministro,
 )
+
 
 
 
@@ -102,7 +107,15 @@ def dona(request):
     if request.method == "POST":
         form = DonacionForm(request.POST)
         if form.is_valid():
-            form.save()
+            donacion = form.save()  # guardamos en la BD
+
+            # 👉 Llamamos al helper para enviar correo de notificación
+            try:
+                enviar_correo_notificacion_donacion(donacion)
+            except Exception as e:
+                # No queremos que la página explote si falla el correo
+                print("Error al enviar correo de donación:", e)
+
             return redirect("dona_ok")
     else:
         form = DonacionForm()
@@ -668,3 +681,80 @@ class UserDelete(DeleteView):
     model = User
     template_name = "crud/user_confirm_delete.html"
     success_url = reverse_lazy("crud_user_list")
+
+# ===================== API DONACIONES (REST) =====================
+
+class DonacionListCreateAPI(generics.ListCreateAPIView):
+    """
+    GET  /api/donaciones/  -> lista todas las donaciones
+    POST /api/donaciones/  -> crea una nueva donación
+    """
+    queryset = Donacion.objects.all().order_by("-fecha")
+    serializer_class = DonacionSerializer
+    # cualquiera puede consultar, pero sólo usuarios logueados pueden crear
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class DonacionDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET    /api/donaciones/<id_donacion>/ -> detalle
+    PUT    /api/donaciones/<id_donacion>/ -> actualizar
+    PATCH  /api/donaciones/<id_donacion>/ -> actualizar parcial
+    DELETE /api/donaciones/<id_donacion>/ -> eliminar
+    """
+    queryset = Donacion.objects.all()
+    serializer_class = DonacionSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    # porque tu PK se llama id_donacion (no "id")
+    lookup_field = "id_donacion"
+
+    # ===================== API CONTACTOS (REST) =====================
+
+class ContactoListCreateAPI(generics.ListCreateAPIView):
+    """
+    GET  /api/contactos/  -> lista solicitudes de ayuda
+    POST /api/contactos/  -> crea una nueva solicitud
+    """
+    queryset = Contacto.objects.all().order_by(F("fecha").desc(nulls_last=True))
+    serializer_class = ContactoSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        """
+        Filtros simples por querystring:
+        - ?q=texto       -> busca por nombre, correo, teléfono, descripción
+        - ?region=xxx    -> filtra por región
+        - ?prioridad=alta/media/baja
+        """
+        qs = super().get_queryset()
+        q = self.request.GET.get("q", "").strip()
+        region = self.request.GET.get("region", "").strip()
+        prioridad = self.request.GET.get("prioridad", "").strip()
+
+        if q:
+            qs = qs.filter(
+                Q(nombre__icontains=q) |
+                Q(correo__icontains=q) |
+                Q(telefono__icontains=q) |
+                Q(descripcion_necesidad__icontains=q)
+            )
+        if region:
+            qs = qs.filter(region__icontains=region)
+        if prioridad:
+            qs = qs.filter(prioridad__iexact=prioridad)
+
+        return qs
+
+
+class ContactoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET    /api/contactos/<id_contacto>/ -> detalle
+    PUT    /api/contactos/<id_contacto>/ -> actualizar
+    PATCH  /api/contactos/<id_contacto>/ -> actualizar parcial
+    DELETE /api/contactos/<id_contacto>/ -> eliminar
+    """
+    queryset = Contacto.objects.all()
+    serializer_class = ContactoSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = "id_contacto"   # porque tu PK se llama así

@@ -1,29 +1,79 @@
-{% extends 'base.html' %}
-{% block title %}Contacto #{{ obj.id }}{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Detalle de solicitud de ayuda{% endblock %}
+
 {% block content %}
-<div class="box">
-  <h2>Contacto #{{ obj.id }}</h2>
-  <table class="table">
-    <tr><th>Nombre</th><td>{{ obj.nombre }}</td></tr>
-    <tr><th>Correo</th><td>{{ obj.correo }}</td></tr>
-    <tr><th>Teléfono</th><td>{{ obj.telefono }}</td></tr>
-    <tr><th>Región</th><td>{{ obj.region }}</td></tr>
-    <tr><th>Comuna</th><td>{{ obj.comuna }}</td></tr>
-    <tr><th>Dirección</th><td>{{ obj.direccion }}</td></tr>
-    <tr><th>Tipo comunidad</th><td>{{ obj.tipo_comunidad }}</td></tr>
-    <tr><th>Nombre comunidad</th><td>{{ obj.nombre_comunidad }}</td></tr>
-    <tr><th>Descripción</th><td>{{ obj.descripcion_necesidad }}</td></tr>
-    <tr><th>Cantidad personas</th><td>{{ obj.cantidad_personas }}</td></tr>
-    <tr><th>Prioridad</th><td>{{ obj.prioridad|title }}</td></tr>
-    <tr><th>Acepta contacto</th><td>{% if obj.acepta_contacto %}Sí{% else %}No{% endif %}</td></tr>
-    <tr><th>Creado</th><td>{{ obj.creado|date:"Y-m-d H:i" }}</td></tr>
-  </table>
+<h2>Detalle de solicitud de ayuda</h2>
 
-  <div class="actions">
-    <a class="btn" href="{% url 'crud_contacto_update' obj.pk %}">Editar</a>
-    <a class="btn warn" href="{% url 'crud_contacto_delete' obj.pk %}">Eliminar</a>
-    <a class="btn ghost" href="{% url 'crud_contacto_list' %}">Volver</a>
-  </div>
+<div class="card">
+  <h3>Información del solicitante</h3>
+  <p><strong>Nombre:</strong> {{ obj.nombre }}</p>
+  <p><strong>Correo:</strong> {{ obj.correo }}</p>
+  <p><strong>Teléfono:</strong> {{ obj.telefono }}</p>
+
+  <h3>Ubicación declarada</h3>
+  <p><strong>Región:</strong> {{ obj.region }}</p>
+  <p><strong>Comuna:</strong> {{ obj.comuna }}</p>
+  <p><strong>Dirección:</strong> {{ obj.direccion|default:"(sin dirección exacta)" }}</p>
+
+  <h3>Detalle de la necesidad</h3>
+  <p><strong>Tipo de comunidad:</strong> {{ obj.tipo_comunidad }}</p>
+  <p><strong>Nombre comunidad:</strong> {{ obj.nombre_comunidad|default:"(no especificado)" }}</p>
+  <p><strong>Descripción:</strong></p>
+  <p>{{ obj.descripcion_necesidad }}</p>
+
+  <p><strong>Cantidad estimada de personas:</strong> {{ obj.cantidad_personas|default:"(no indicado)" }}</p>
+  <p><strong>Prioridad:</strong> {{ obj.prioridad|default:"(sin prioridad)" }}</p>
+  <p><strong>Acepta contacto:</strong>
+    {% if obj.acepta_contacto %}Sí{% else %}No{% endif %}
+  </p>
 </div>
-{% endblock %}
 
+<hr>
+
+<h3>Ubicación aproximada en el mapa</h3>
+
+<!-- Contenedor del mapa -->
+<div id="map" style="height: 320px; border-radius: 10px; margin: 1rem 0;"></div>
+
+<!-- CARGA DE LEAFLET (CSS + JS) DESDE CDN -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  // Coordenadas FIJAS (ejemplo: Santiago centro)
+  const lat = -33.4489;   // latitud
+  const lng = -70.6693;   // longitud
+  const zoomLevel = 11;   // nivel de zoom
+
+  // Crear el mapa dentro del div con id="map"
+  const map = L.map('map').setView([lat, lng], zoomLevel);
+
+  // Cargar tiles desde OpenStreetMap (API externa)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Agregar un marcador fijo
+  L.marker([lat, lng]).addTo(map)
+    .bindPopup("Zona de atención de Help People")
+    .openPopup();
+</script>
+
+<!-- Enlace para abrir en Google Maps solo por comodidad -->
+<p>
+  <a
+    href="https://www.google.com/maps/search/?api=1&query={{ obj.comuna|urlencode }}+{{ obj.region|urlencode }}"
+    target="_blank"
+  >
+    Ver comuna en Google Maps
+  </a>
+</p>
+
+<p>
+  <a href="{% url 'crud_contacto_list' %}" class="btn">Volver al listado</a>
+</p>
+{% endblock %}

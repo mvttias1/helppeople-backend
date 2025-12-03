@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path
 from help_app import views
+from help_app import views  # ya lo tienes arriba normalmente
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -78,5 +80,13 @@ urlpatterns = [
     path("gestion/rutas/export.csv",         views.export_rutas_csv,         name="export_rutas_csv"),
     path("gestion/suministros/export.csv",   views.export_suministros_csv,   name="export_suministros_csv"),
 
+    path("api/donaciones/", views.DonacionListCreateAPI.as_view(),
+         name="api_donaciones_list_create"),
+    path("api/donaciones/<int:id_donacion>/", views.DonacionDetailAPI.as_view(),
+         name="api_donaciones_detail"),
+    path("api/contactos/", views.ContactoListCreateAPI.as_view(),
+         name="api_contactos_list_create"),
+    path("api/contactos/<int:id_contacto>/", views.ContactoDetailAPI.as_view(),
+         name="api_contactos_detail"),
 
 ]
