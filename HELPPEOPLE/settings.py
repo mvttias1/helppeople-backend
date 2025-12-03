@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-
+import dj_database_url
 
 
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
@@ -104,16 +104,32 @@ WSGI_APPLICATION = 'HELPPEOPLE.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': "distribucion",
-        'USER': "root",
-        'PASSWORD': "admin",
-        'HOST': "localhost",
-    }
-}
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
+if DATABASE_URL:
+    # En Render usamos PostgreSQL
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    # En tu PC sigues usando MySQL + HeidiSQL
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "distribucion",
+            "USER": "root",
+            "PASSWORD": "admin",
+            "HOST": "localhost",
+            "PORT": "3306",
+            "OPTIONS": {
+                "charset": "utf8mb4",
+            },
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
