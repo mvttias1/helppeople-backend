@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
+
+
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 
 
@@ -44,6 +46,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "10.58.2.146",
+    "helppeople-backend.onrender.com",
 
     
 ]
