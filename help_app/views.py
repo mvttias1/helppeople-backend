@@ -1,6 +1,8 @@
 from datetime import timedelta
 import csv
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets
 from rest_framework import permissions
 from .email_utils import enviar_correo_notificacion_donacion, enviar_correo
 from rest_framework import generics, permissions
@@ -91,7 +93,7 @@ def inicio(request):
 def sobre(request):
     return render(request, "sobre.html")
 
-@login_required
+@login_required(login_url='login')
 def contacto(request):
     if request.method == "POST":
         form = ContactoForm(request.POST)
@@ -105,7 +107,7 @@ def contacto(request):
 def contacto_ok(request):
     return render(request, "ok.html", {"mensaje": "¡Recibimos tu solicitud de ayuda! Nos contactaremos pronto."})
 
-@login_required
+@login_required(login_url='login')
 def dona(request):
     if request.method == "POST":
         form = DonacionForm(request.POST)
@@ -772,4 +774,4 @@ class EsRecaudacion(permissions.BasePermission):
 class DonacionViewSet(viewsets.ModelViewSet):
     queryset = Donacion.objects.all()
     serializer_class = DonacionSerializer
-    permission_classes = [EsRecaudacion]
+    permission_classes = [IsAuthenticated]
