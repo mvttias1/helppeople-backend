@@ -32,21 +32,29 @@
   {% block extra_head %}{% endblock %}
 </head>
 <body>
+
 <header>
   <img src="{% static 'images/HELPPEOPLE_logo.png' %}" alt="Logo" class="logo">
   <h1 style="margin:0;font-size:1.25rem;">Help People</h1>
+
   <nav style="margin-left:auto">
     <ul>
       <li><a href="{% url 'inicio' %}">Inicio</a></li>
       <li><a href="{% url 'sobre' %}">Sobre Nosotros</a></li>
-      <li><a href="{% url 'contacto' %}">Contacto</a></li>
-      <li><a href="{% url 'dona' %}">Donar</a></li>
-      {% if request.user.is_authenticated %}
-        {% if request.user.is_staff or request.user.is_superuser %}
+
+      {% if user.is_authenticated %}
+        <li><a href="{% url 'contacto' %}">Contacto</a></li>
+        <li><a href="{% url 'dona' %}">Donar</a></li>
+
+        {% if user.is_staff or user.is_superuser %}
           <li><a href="{% url 'panel' %}">Gestión</a></li>
         {% endif %}
+
         <li><a href="{% url 'logout' %}">Salir</a></li>
+
       {% else %}
+        <li><a href="{% url 'contacto' %}">Contacto</a></li>
+        <li><a href="{% url 'login' %}">Inicia sesión para donar</a></li>
         <li><a href="{% url 'login' %}">Entrar</a></li>
         <li><a href="{% url 'register' %}">Crear cuenta</a></li>
       {% endif %}

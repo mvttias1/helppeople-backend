@@ -1,6 +1,7 @@
 from datetime import timedelta
 import csv
 
+from rest_framework import permissions
 from .email_utils import enviar_correo_notificacion_donacion, enviar_correo
 from rest_framework import generics, permissions
 from .serializers import DonacionSerializer, ContactoSerializer
@@ -90,6 +91,7 @@ def inicio(request):
 def sobre(request):
     return render(request, "sobre.html")
 
+@login_required
 def contacto(request):
     if request.method == "POST":
         form = ContactoForm(request.POST)
@@ -103,6 +105,7 @@ def contacto(request):
 def contacto_ok(request):
     return render(request, "ok.html", {"mensaje": "¡Recibimos tu solicitud de ayuda! Nos contactaremos pronto."})
 
+@login_required
 def dona(request):
     if request.method == "POST":
         form = DonacionForm(request.POST)
@@ -758,3 +761,15 @@ class ContactoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ContactoSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = "id_contacto"   # porque tu PK se llama así
+
+class EsRecaudacion(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated and
+            request.user.groups.filter(name='Recaudacion').exists()
+        )
+
+class DonacionViewSet(viewsets.ModelViewSet):
+    queryset = Donacion.objects.all()
+    serializer_class = DonacionSerializer
+    permission_classes = [EsRecaudacion]
