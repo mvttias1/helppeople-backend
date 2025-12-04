@@ -1,6 +1,9 @@
 from datetime import timedelta
 import csv
 
+
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -29,6 +32,57 @@ from .models import (
 
 
 
+def enviar_correos_donacion(donacion):
+    """
+    Usa la API externa de SendGrid para:
+    1) Enviar correo al donante.
+    2) (Opcional) Enviar notificación interna al equipo.
+    """
+    api_key = os.getenv("SENDGRID_API_KEY")
+    if not api_key:
+        print("SENDGRID_API_KEY no está configurada, no se envía correo.")
+        return
+
+    try:
+        sg = SendGridAPIClient(api_key)
+
+        # 1) Correo al donante
+        mensaje_donante = Mail(
+            from_email=os.getenv("DEFAULT_FROM_EMAIL", "matiasdonoso135@gmail.com"),
+            to_emails=donacion.correo,  # <-- AJUSTA el nombre del campo si es distinto
+            subject="¡Gracias por tu donación a Help People!",
+            html_content=f"""
+                <p>Hola <strong>{donacion.nombre}</strong>,</p>
+                <p>Hemos recibido tu intención de donación.</p>
+                <p><strong>Pronto te contactaremos para coordinar tu donación.</strong></p>
+                <p>Muchas gracias por apoyar a Help People ❤️</p>
+            """
+        )
+        sg.send(mensaje_donante)
+
+        # 2) Notificación interna al equipo (opcional)
+        correo_equipo = os.getenv("NOTIFICATION_EMAIL")
+        if correo_equipo:
+            mensaje_interno = Mail(
+                from_email=os.getenv("DEFAULT_FROM_EMAIL", "matiasdonoso135@gmail.com"),
+                to_emails=correo_equipo,
+                subject="Nueva donación registrada en Help People",
+                html_content=f"""
+                    <h3>Nueva donación registrada</h3>
+                    <ul>
+                        <li><strong>Nombre:</strong> {donacion.nombre}</li>
+                        <li><strong>Apellido:</strong> {getattr(donacion, "apellido", "")}</li>
+                        <li><strong>Correo:</strong> {donacion.correo}</li>
+                        <li><strong>Teléfono:</strong> {getattr(donacion, "telefono", "")}</li>
+                        <li><strong>Tipo de donación:</strong> {getattr(donacion, "tipo_donacion", "")}</li>
+                    </ul>
+                """
+            )
+            sg.send(mensaje_interno)
+
+    except Exception as e:
+        # No queremos que un fallo de correo rompa la app
+        print(f"Error enviando correos de donación: {e}")
 
 def in_group(user, name: str) -> bool:
     return user.is_authenticated and user.groups.filter(name=name).exists()
@@ -112,18 +166,19 @@ def dona(request):
     if request.method == "POST":
         form = DonacionForm(request.POST)
         if form.is_valid():
-            donacion = form.save()  # guardamos en la BD
+            donacion = form.save()
 
-            # 👉 Llamamos al helper para enviar correo de notificación
-            try:
-                enviar_correo_notificacion_donacion(donacion)
-            except Exception as e:
-                # No queremos que la página explote si falla el correo
-                print("Error al enviar correo de donación:", e)
+            # 👉 Aquí llamamos a la API externa (SendGrid)
+            enviar_correos_donacion(donacion)
 
-            return redirect("dona_ok")
+            messages.success(
+                request,
+                "Hemos recibido tu donación. Pronto te contactaremos y te enviamos un correo de confirmación."
+            )
+            return redirect('dona')  # o a la página que quieras
     else:
         form = DonacionForm()
+
     return render(request, "dona.html", {"form": form})
 
 def dona_ok(request):
